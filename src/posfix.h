@@ -29,6 +29,6 @@ typedef struct token {
 } Token;
 
 
-double calculate(char* experssion);
+double posfix_calculate(char* experssion);
 
 #endif // POSFIX_H_

@@ -66,7 +66,7 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 
 
 		if(is_operator(buffer)){
-			printf("Operator: '%s'\n",buffer);
+			//printf("Operator: '%s'\n",buffer);
 
 
 			//trim(value);
@@ -92,7 +92,7 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 				continue;
 			}
 
-			printf("Value: '%s'\n",buffer);
+			//printf("Value: '%s'\n",buffer);
 
 			Token *token = malloc(sizeof(Token));
 			token->type = NUMBER;
@@ -133,8 +133,8 @@ void free_token(Token* token){
 	}
 }
 
-double calculate(char* expression){
-	printf("%s\n",expression);
+double posfix_calculate(char* expression){
+	//printf("%s\n",expression);
 	Stack(double) stack;
 	INIT_STACK(stack);
 
@@ -144,8 +144,8 @@ double calculate(char* expression){
 
 	for(int i = 0; i < size;i ++){
 		Token* token = tokens[i];
-		printf("%s ",type_string[token->type]);
-		printf("%s\n",token->value);
+	//	printf("%s ",type_string[token->type]);
+//		printf("%s\n",token->value);
 		switch(token->type){
 			case NUMBER:
 
@@ -167,7 +167,7 @@ double calculate(char* expression){
 		}
 	}
 	double ans = POP(stack);
-	printf("%lf\n",ans);
+	//printf("%lf\n",ans);
 
 	for(int i = 0; i < size;i ++){
 		free_token(tokens[i]);
