@@ -1,0 +1,10 @@
+c
+
+we need a calculator module
+   equations
+   variables
+   functions
+   this needs to be simmular to a programing lanugage
+   we need to parse the input to save it
+a plot module
+  to plot functions of one variable
