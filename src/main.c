@@ -12,7 +12,7 @@ int main(){
 	printf("%s",str);
 
 
-	double value = calculate(str);
+	double value = posfix_calculate(str);
 	printf("%lf\n",value);
 
 	return 0;

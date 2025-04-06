@@ -26,25 +26,34 @@ void test_posfix_calculate() {
 
 }
 
+void test_tokenizer(){
+	Token* tokens[10];
+	int size = 0;
+
+	tokenize(tokens,&size,"f(x) = 10 10 * ");
+	for(int i = 0; i < size; i++){
+		printf("%s ",type_string[tokens[i]->type]);
+	}
+	puts("");
+	for(int i = 0; i < size; i++){
+		printf("%s ",tokens[i]->value);
+	}
+	puts("");
+}
+
 void test_turing(){
 	Calculator calc;
 	calc.f_index = 0;
-	char exp[6] = {"x 20 *"};
-	add_function(&calc,"f",exp );
 
-	for (int i = 0; i < 1; i++) {
-		printf("Name: %s\nExpression: %s\n",calc.functions[i].name,calc.functions[i].expression);
-		for (int j=0; j < 100; j++) {
-			printf("%lf\n",call_function(&calc.functions[i], j));
-		}
-
-	}
+	char str[] = "2 2 *";
+	printf("%lf\n", eval(&calc, str));
 
 }
 
 int main(){
 	test_posfix_calculate();
-
+	test_tokenizer();
 	test_turing();
-	printf("All tests passed! 🎉\n");
+	printf("%lf\n",posfix_calculate("x = 10 10 +"));
+	printf("All tests passed!\n");
 }

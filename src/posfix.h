@@ -20,8 +20,12 @@
 
 typedef enum Type {
     NUMBER,
-    OPERATOR
+    OPERATOR,
+    EQUALS,
+    VARIABLE
 } Type;
+
+static const char type_string[4][20] = {"NUMBER", "OPERATOR", "EQUALS","VARIABLE"};
 
 typedef struct token {
     Type type;
@@ -29,6 +33,7 @@ typedef struct token {
 } Token;
 
 
+void tokenize(Token** tokens, int* size ,char* expression);
 double posfix_calculate(char* experssion);
 
 #endif // POSFIX_H_

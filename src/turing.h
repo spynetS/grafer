@@ -25,5 +25,6 @@ void add_function(Calculator* calculator, char* name, char* expression);
 void add_variable(Calculator* calculator, char* name, double value);
 
 double call_function(Function* function, double x);
+double eval(Calculator* calc, const char *str);
 
 #endif // TURING_H_

@@ -50,6 +50,11 @@ char *str_replace(char *orig, char *rep, char *with) {
     return result;
 }
 
+double eval(Calculator* calc, const char *str){
+    double ans = 0;
+    ans = posfix_calculate(str);
+    return ans;
+}
 
 double call_function(Function *function, double x){
 	char* result = malloc(sizeof(char)*strlen(function->expression));
@@ -63,6 +68,5 @@ double call_function(Function *function, double x){
 
 void add_function(Calculator* calculator, char *name, char *expression){
 	Function function = {name, expression};
-
 	calculator->functions[calculator->f_index++] = function;
 }

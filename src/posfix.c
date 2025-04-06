@@ -5,6 +5,17 @@
 #include <string.h>
 #include <assert.h>
 
+#include <stdlib.h>
+#include <stdbool.h>
+
+bool is_number(const char *str) {
+    char *endptr;
+    strtod(str, &endptr); // use strtol for integers
+    return *str != '\0' && *endptr == '\0'; // must consume whole string
+}
+
+
+
 void trim(char* str) {
     // Check for NULL string
     if (str == NULL) return;
@@ -42,6 +53,20 @@ double operate(char* operator, double a, double b){
 	return -1;
 }
 
+void add_token(Token** tokens, int* size,Type type, char* buffer){
+		//trim(value);
+	Token *token = malloc(sizeof(Token));
+	token->type = type;
+	token->value = strdup(buffer);
+	trim(token->value);
+
+	tokens[(*size)] = token;
+
+
+	(*size) ++;
+
+}
+
 /*
  * Will go through a posfix expression an tokenize it.
  * It will add a Token allocated on the heap in the tokens
@@ -62,26 +87,22 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 			buffer[buf_index++] = value;
 			buffer[buf_index] = '\0';
 		}
-		//printf(", buffer is '%s'\n",buffer);
-
-
-		if(is_operator(buffer)){
-			//printf("Operator: '%s'\n",buffer);
-
-
-			//trim(value);
-			Token *token = malloc(sizeof(Token));
-			token->type = OPERATOR;
-			token->value = strdup(buffer);
-
-			tokens[(*size)] = token;
-
+		if(value == '='){
+			add_token(tokens,size,EQUALS,"=");
+			buffer[0]='\0';
 			buf_index = 0;
+			if(i+1 < strlen(expression)){
+				i++; // this is to don't add the space after an operator
+			}
+		}
+		else if(is_operator(buffer)){
+			//printf("Operator: '%s'\n",buffer);
+			add_token(tokens,size,OPERATOR,buffer);
+			(buf_index) = 0;
 			buffer[0] = '\0';  // Clears the content of the string (makes it empty)	tokens[(*size)] = token;
-			(*size) ++;
+
 
 			if(i+1 < strlen(expression)){
-				puts("here");
 				i++; // this is to don't add the space after an operator
 			}
 		}
@@ -91,19 +112,17 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 				puts("empty value, continuing");
 				continue;
 			}
+			trim(buffer);
+			if(is_number(buffer)){
+				add_token(tokens,size,NUMBER, buffer);
+			}
+			else{
+				add_token(tokens,size,VARIABLE, buffer);
+			}
 
-			//printf("Value: '%s'\n",buffer);
+			(buf_index) = 0;
+			buffer[0] = '\0';  // Clears the content of the string (makes it empty)	tokens[(*size)] = token;
 
-			Token *token = malloc(sizeof(Token));
-			token->type = NUMBER;
-			token->value = strdup(buffer);
-
-			//trim(token->value);
-			tokens[(*size)] = token;
-
-			buf_index = 0;
-			buffer[0] = '\0';  // Clears the content of the string (makes it empty)tokens[(*size)] = token;
-			(*size) ++;
 		}
 
 	}
@@ -112,19 +131,11 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 
 		}
 		else{
-			Token *token = malloc(sizeof(Token));
-			token->type = NUMBER;
-			token->value = strdup(buffer);
-
-			//trim(token->value);
-			tokens[(*size)] = token;
-			(*size)++;
+			add_token(tokens,size,NUMBER,buffer);
 		}
 	}
 	free(buffer);
 }
-
-char type_string[2][10] = {"NUMBER","OPERATOR"};
 
 void free_token(Token* token){
 	if(token != NULL){
