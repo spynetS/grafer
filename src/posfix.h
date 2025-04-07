@@ -22,18 +22,24 @@ typedef enum Type {
     NUMBER,
     OPERATOR,
     EQUALS,
-    VARIABLE
+    VARIABLE,
+    FUNC,
+    O_P,
+    C_P,
+    PARAMETER
 } Type;
 
-static const char type_string[4][20] = {"NUMBER", "OPERATOR", "EQUALS","VARIABLE"};
+static const char type_string[8][20] = {"NUMBER", "OPERATOR", "EQUALS","VARIABLE","FUNC","O_P","C_P","PARAMETER"};
 
 typedef struct token {
     Type type;
     char* value;
 } Token;
 
-
+void free_token(Token* token);
 void tokenize(Token** tokens, int* size ,char* expression);
 double posfix_calculate(char* experssion);
+double posfix_calculate_tokens(Token **tokens, int size);
+
 
 #endif // POSFIX_H_

@@ -82,12 +82,27 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 	for (int i = 0; i < strlen(expression); i++){
 
 		char value = expression[i];
-		//printf("reads %c",value);
+		printf("reads %c ",value);
 		if (buf_index < 63) { // keep one space for null terminator
 			buffer[buf_index++] = value;
 			buffer[buf_index] = '\0';
 		}
-		if(value == '='){
+		if (value == ')'){
+			buffer[buf_index-1] = '\0';
+			add_token(tokens,size,PARAMETER,buffer);
+
+			add_token(tokens,size,C_P,")");
+			buffer[0]='\0';
+			buf_index = 0;
+		}
+		else if(value == '(') {
+			buffer[buf_index-1] = '\0';
+			add_token(tokens,size,FUNC,buffer);
+			add_token(tokens,size,O_P,"(");
+			buffer[0]='\0';
+			buf_index = 0;
+		}
+		else if(value == '='){
 			add_token(tokens,size,EQUALS,"=");
 			buffer[0]='\0';
 			buf_index = 0;
@@ -107,12 +122,11 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 			}
 		}
 		else if(value == ' '){
-
-			if (strcmp(buffer,"") == 0){
+			trim(buffer);
+			if (strcmp(buffer,"") == 0 || strcmp(buffer," ") == 0){
 				puts("empty value, continuing");
 				continue;
 			}
-			trim(buffer);
 			if(is_number(buffer)){
 				add_token(tokens,size,NUMBER, buffer);
 			}
@@ -126,6 +140,7 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 		}
 
 	}
+
 	if(buf_index > 0){
 		if(is_operator(buffer)){
 
@@ -135,6 +150,7 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 		}
 	}
 	free(buffer);
+	puts("");
 }
 
 void free_token(Token* token){
@@ -144,19 +160,30 @@ void free_token(Token* token){
 	}
 }
 
-double posfix_calculate(char* expression){
-	//printf("%s\n",expression);
-	Stack(double) stack;
-	INIT_STACK(stack);
+double posfix_calculate(char *expression){
 
 	Token* tokens[128];
 	int size = 0;
 	tokenize(tokens,&size,expression);
+	double ans = posfix_calculate_tokens(tokens, size);
+	for(int i =0 ; i < size; i ++){
+		free_token(tokens[i]);
+	}
+	return ans;
+}
+
+double posfix_calculate_tokens(Token **tokens, int size){
+
+	Stack(double) stack;
+	INIT_STACK(stack);
 
 	for(int i = 0; i < size;i ++){
+
 		Token* token = tokens[i];
-	//	printf("%s ",type_string[token->type]);
-//		printf("%s\n",token->value);
+
+		printf("%s ",type_string[token->type]);
+
+		//printf("%s\n",token->value);
 		switch(token->type){
 			case NUMBER:
 
@@ -179,10 +206,6 @@ double posfix_calculate(char* expression){
 	}
 	double ans = POP(stack);
 	//printf("%lf\n",ans);
-
-	for(int i = 0; i < size;i ++){
-		free_token(tokens[i]);
-	}
 
 
 	return ans;

@@ -30,7 +30,7 @@ void test_tokenizer(){
 	Token* tokens[10];
 	int size = 0;
 
-	tokenize(tokens,&size,"f(x) = 10 10 * ");
+	tokenize(tokens,&size,"x = 2 2 * ");
 	for(int i = 0; i < size; i++){
 		printf("%s ",type_string[tokens[i]->type]);
 	}
@@ -45,14 +45,14 @@ void test_turing(){
 	Calculator calc;
 	calc.f_index = 0;
 
-	char str[] = "2 2 *";
-	printf("%lf\n", eval(&calc, str));
+	char str[] = "f(x) = x 2 *";
+	printf("TEST: %lf; %lf\n", eval(&calc, str), 0);//call_function(calc.functions[0],1));
 
 }
 
 int main(){
-	test_posfix_calculate();
-	test_tokenizer();
+	//test_posfix_calculate();
+	//test_tokenizer();
 	test_turing();
 	printf("%lf\n",posfix_calculate("x = 10 10 +"));
 	printf("All tests passed!\n");

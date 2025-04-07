@@ -3,9 +3,11 @@
 
 
 // holds the name to be called
+#include "posfix.h"
 typedef struct function{
 	char* name;
-	char* expression;
+	Token** expression;
+	int size;
 } Function;
 
 typedef struct variable{
@@ -14,17 +16,17 @@ typedef struct variable{
 } Variable;
 
 typedef struct calculator{
-	Function functions[10];
+	Function *functions[10];
 	int f_index;
 	Variable variables[10];
 	int v_index;
 
 } Calculator;
 
-void add_function(Calculator* calculator, char* name, char* expression);
+void add_function(Calculator* calculator, char* name, Token** expression, int size);
 void add_variable(Calculator* calculator, char* name, double value);
 
 double call_function(Function* function, double x);
-double eval(Calculator* calc, const char *str);
+double eval(Calculator* calc, char *str);
 
 #endif // TURING_H_
