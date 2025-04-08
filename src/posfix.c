@@ -180,13 +180,12 @@ double posfix_calculate_tokens(Token **tokens, int size){
 
 		Token* token = tokens[i];
 
-		printf("%s ",type_string[token->type]);
-
 		//printf("%s\n",token->value);
 		switch(token->type){
 			case NUMBER:
 
-				double number = atoi(token->value);
+				double number;
+				sscanf(token->value,"%lf",&number);
 				//printf("adds number %lf to stack\n",number);
 				PUSH(stack,number);
 			break;

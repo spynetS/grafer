@@ -18,6 +18,11 @@ void test_posfix_calculate() {
 	// Repeated operations
 	assert(posfix_calculate("1 2 + 3 + 4 + 5 +") == 15.0);
 
+	// decimals
+	assert(posfix_calculate("2.2 2.2 +") == 4.4);
+	assert(posfix_calculate("2 5 /") == 0.4);
+
+
 	// Edge cases
 	assert(posfix_calculate("5") == 5.0);
 	assert(posfix_calculate("2 10 10 + -") == -18.0);
@@ -47,8 +52,8 @@ void test_turing(){
 
 	char str[] = "x = 2 2 *";
 	eval(&calc, str);//call_function(calc.functions[0],1));
-	eval(&calc, "f(x)= x 2 *");
-	double ans = call_function(calc.functions[0],3);
+	eval(&calc, "f(x)= x 2 +");
+	double ans = call_function(calc.functions[0],3.2);
 	printf("ANS: %lf\n",ans);
 
 
@@ -57,7 +62,7 @@ void test_turing(){
 }
 
 int main(){
-	//test_posfix_calculate();
+	test_posfix_calculate();
 	//test_tokenizer();
 	test_turing();
 //	printf("%lf\n",posfix_calculate("x = 10 10 +"));

@@ -112,14 +112,13 @@ double call_function(Function *function, double x){
         // that also in the function to let the user set what name of the parameter
         // they want
         if(strcmp(function->expression[i]->value,"x")==0){
-            char repl[10];
+            char repl[100];
             sprintf(repl,"%lf",x);
+
             strcpy(function->expression[i]->value,repl);
             function->expression[i]->type=NUMBER;
         }
-        printf("%s ",function->expression[i]->value);
 	}
-    puts("");
 
 	return  posfix_calculate_tokens(function->expression,function->size);
 }
