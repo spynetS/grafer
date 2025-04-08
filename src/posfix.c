@@ -82,7 +82,7 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 	for (int i = 0; i < strlen(expression); i++){
 
 		char value = expression[i];
-		printf("reads %c ",value);
+		//printf("reads %c ",value);
 		if (buf_index < 63) { // keep one space for null terminator
 			buffer[buf_index++] = value;
 			buffer[buf_index] = '\0';
@@ -150,7 +150,6 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 		}
 	}
 	free(buffer);
-	puts("");
 }
 
 void free_token(Token* token){

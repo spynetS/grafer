@@ -4,6 +4,19 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+void free_function(Function* func){
+    if(func != NULL){
+        free(func->name);
+        for(int i = 0; i < func->size; i ++){
+            free_token(func->expression[i]);
+        }
+        free(func->expression);
+        free(func);
+    }
+
+}
+
 char *str_replace(char *orig, char *rep, char *with) {
     char *result; // the return string
     char *ins;    // the next insert point
@@ -64,7 +77,7 @@ void print_tokens(Token** tokens, int size){
 
 double eval(Calculator* calc, char *str){
     double ans = 0;
-    Token** tokens = malloc(sizeof(Token)*10);
+    Token** tokens = malloc(sizeof(Token)*100);
 	int size = 0;
     double x = 0;
 	tokenize(tokens,&size,str);
@@ -72,7 +85,7 @@ double eval(Calculator* calc, char *str){
 	for(int i = 0; i < size; i++){
         if(tokens[i]->type == VARIABLE &&
            tokens[i+1]->type == EQUALS ){
-            //printf("variable assignment %s = %lf\n",tokens[i]->value,posfix_calculate_tokens(&tokens[i], size-i));
+            printf("variable assignment\n");
         }
         if(tokens[i]->type == FUNC &&
            tokens[i+1]->type == O_P &&
@@ -80,11 +93,10 @@ double eval(Calculator* calc, char *str){
            tokens[i+3]->type == C_P &&
            tokens[i+4]->type == EQUALS){
             printf("Function assignment\n");
-            //add_function(calc,  tokens[i]->value, tokens,size);
+            add_function(calc,  tokens[i]->value, &tokens[i+5],size-5);
 
         }
     }
-    puts("");
     print_tokens(tokens,size);
     for(int i = 0; i < size; i ++){
         free_token(tokens[i]);
@@ -96,16 +108,40 @@ double eval(Calculator* calc, char *str){
 
 double call_function(Function *function, double x){
     for(int i = 0; i < function->size; i++){
+        // instead of x here add a parameter value to the function and pass in
+        // that also in the function to let the user set what name of the parameter
+        // they want
+        if(strcmp(function->expression[i]->value,"x")==0){
+            char repl[10];
+            sprintf(repl,"%lf",x);
+            strcpy(function->expression[i]->value,repl);
+            function->expression[i]->type=NUMBER;
+        }
         printf("%s ",function->expression[i]->value);
 	}
+    puts("");
+
 	return  posfix_calculate_tokens(function->expression,function->size);
 }
 
 void add_function(Calculator* calculator, char *name, Token **expression, int size){
     Function *function = malloc(sizeof(Function));
-    function->expression = expression;
+
+    function->expression = malloc(sizeof(Token*)*size);
+
+    for(int i = 0 ; i < size; i ++){
+        Token* token = malloc(sizeof(Token));
+
+        token->type = expression[i]->type;
+        token->value = malloc(sizeof(char)*strlen(expression[i]->value)+1);
+        strcpy(token->value, expression[i]->value);
+        function->expression[i] = token;
+    }
+    //print_tokens(function->expression, size);
+
     function->size = size;
-    function->name = name;
+    function->name = malloc(sizeof(char)*strlen(name)+1);
+    strcpy(function->name,name);
 
 	calculator->functions[calculator->f_index++] = function;
 }

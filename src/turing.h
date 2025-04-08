@@ -23,6 +23,8 @@ typedef struct calculator{
 
 } Calculator;
 
+void free_function(Function* func);
+
 void add_function(Calculator* calculator, char* name, Token** expression, int size);
 void add_variable(Calculator* calculator, char* name, double value);
 

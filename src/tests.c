@@ -45,8 +45,14 @@ void test_turing(){
 	Calculator calc;
 	calc.f_index = 0;
 
-	char str[] = "f(x) = x 2 *";
-	printf("TEST: %lf; %lf\n", eval(&calc, str), 0);//call_function(calc.functions[0],1));
+	char str[] = "x = 2 2 *";
+	eval(&calc, str);//call_function(calc.functions[0],1));
+	eval(&calc, "f(x)= x 2 *");
+	double ans = call_function(calc.functions[0],3);
+	printf("ANS: %lf\n",ans);
+
+
+	free_function(calc.functions[0]);
 
 }
 
@@ -54,6 +60,6 @@ int main(){
 	//test_posfix_calculate();
 	//test_tokenizer();
 	test_turing();
-	printf("%lf\n",posfix_calculate("x = 10 10 +"));
+//	printf("%lf\n",posfix_calculate("x = 10 10 +"));
 	printf("All tests passed!\n");
 }
