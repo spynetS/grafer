@@ -89,7 +89,15 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 		}
 		if (value == ')'){
 			buffer[buf_index-1] = '\0';
-			add_token(tokens,size,PARAMETER,buffer);
+
+			if(is_number(buffer)){
+				add_token(tokens,size,NUMBER, buffer);
+			}
+			else{
+				add_token(tokens,size,VARIABLE, buffer);
+			}
+
+			//add_token(tokens,size,PARAMETER,buffer);
 
 			add_token(tokens,size,C_P,")");
 			buffer[0]='\0';

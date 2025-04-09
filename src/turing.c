@@ -102,7 +102,7 @@ double eval(Calculator* calc, char *str){
         }
         if(tokens[i]->type == FUNC &&
            tokens[i+1]->type == O_P &&
-           tokens[i+2]->type == PARAMETER &&
+           tokens[i+2]->type == VARIABLE &&
            tokens[i+3]->type == C_P &&
            tokens[i+4]->type == EQUALS){
             printf("Function assignment\n");

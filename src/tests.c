@@ -48,13 +48,13 @@ void test_turing(){
 	Calculator calc;
 	calc.f_index = 0;
 
-	eval(&calc, "10 2 *");//call_function(calc.functions[0],1));
 	eval(&calc, "f(x)= x 10 /");
+	eval(&calc, "10 f(10) *");//call_function(calc.functions[0],1));
 
-	for(double i = 0; i < 10; i ++){
-		double ans = call_function(*calc.functions[0],i);
-		printf("f(%lf) = %lf\n",i,ans);
-	}
+	/* for(double i = 0; i < 10; i ++){ */
+	/* 	double ans = call_function(*calc.functions[0],i); */
+	/* 	printf("f(%lf) = %lf\n",i,ans); */
+	/* } */
 
 
 	free_function(calc.functions[0]);
