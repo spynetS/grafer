@@ -16,6 +16,12 @@ void free_function(Function* func){
     }
 
 }
+void free_variable(Variable* var){
+    if(var != NULL){
+        free(var->name);
+        free(var);
+    }
+}
 
 char *str_replace(char *orig, char *rep, char *with) {
     char *result; // the return string
@@ -82,10 +88,17 @@ double eval(Calculator* calc, char *str){
     double x = 0;
 	tokenize(tokens,&size,str);
 
+    // TODO
+    // replace all variables with the value if exists
+    // repalce function calls with function calls if exists
+
+
 	for(int i = 0; i < size; i++){
         if(tokens[i]->type == VARIABLE &&
            tokens[i+1]->type == EQUALS ){
             printf("variable assignment\n");
+            double value = posfix_calculate_tokens(&tokens[i+2], size-2);
+            add_variable(calc, tokens[i]->value, value);
         }
         if(tokens[i]->type == FUNC &&
            tokens[i+1]->type == O_P &&
@@ -106,21 +119,26 @@ double eval(Calculator* calc, char *str){
     return ans;
 }
 
-double call_function(Function *function, double x){
-    for(int i = 0; i < function->size; i++){
+double call_function(Function function, double x){
+
+    char* ptr;
+    for(int i = 0; i < function.size; i++){
         // instead of x here add a parameter value to the function and pass in
         // that also in the function to let the user set what name of the parameter
         // they want
-        if(strcmp(function->expression[i]->value,"x")==0){
+        if(strcmp(function.expression[i]->value,"x")==0){
+            char* cpy = strdup(function.expression[i]->value);
             char repl[100];
             sprintf(repl,"%lf",x);
-
-            strcpy(function->expression[i]->value,repl);
-            function->expression[i]->type=NUMBER;
+            ptr = function.expression[i]->value;
+            strcpy(function.expression[i]->value,repl);
+            function.expression[i]->type=NUMBER;
         }
-	}
 
-	return  posfix_calculate_tokens(function->expression,function->size);
+	}
+    double ans = posfix_calculate_tokens(function.expression,function.size);
+    strcpy(ptr,"x");
+    return ans;
 }
 
 void add_function(Calculator* calculator, char *name, Token **expression, int size){
@@ -143,4 +161,13 @@ void add_function(Calculator* calculator, char *name, Token **expression, int si
     strcpy(function->name,name);
 
 	calculator->functions[calculator->f_index++] = function;
+}
+
+void add_variable(Calculator* calculator, char* name, double value){
+    Variable* var = malloc(sizeof(Variable));
+    var->name = malloc(sizeof(char)*strlen(name)+1);
+    strcpy(var->name,name);
+
+    var->value = value;
+    calculator->variables[calculator->v_index++] = var;
 }

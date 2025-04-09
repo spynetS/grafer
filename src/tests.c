@@ -27,8 +27,6 @@ void test_posfix_calculate() {
 	assert(posfix_calculate("5") == 5.0);
 	assert(posfix_calculate("2 10 10 + -") == -18.0);
 
-
-
 }
 
 void test_tokenizer(){
@@ -50,14 +48,17 @@ void test_turing(){
 	Calculator calc;
 	calc.f_index = 0;
 
-	char str[] = "x = 2 2 *";
-	eval(&calc, str);//call_function(calc.functions[0],1));
-	eval(&calc, "f(x)= x 2 +");
-	double ans = call_function(calc.functions[0],3.2);
-	printf("ANS: %lf\n",ans);
+	eval(&calc, "10 2 *");//call_function(calc.functions[0],1));
+	eval(&calc, "f(x)= x 10 /");
+
+	for(double i = 0; i < 10; i ++){
+		double ans = call_function(*calc.functions[0],i);
+		printf("f(%lf) = %lf\n",i,ans);
+	}
 
 
 	free_function(calc.functions[0]);
+	//free_variable(calc.variables[0]);
 
 }
 
