@@ -47,9 +47,14 @@ void test_tokenizer(){
 void test_turing(){
 	Calculator calc;
 	calc.f_index = 0;
+	calc.v_index = 0;
 
-	eval(&calc, "f(x)= x 10 /");
-	eval(&calc, "10 f(10) *");//call_function(calc.functions[0],1));
+	eval(&calc, "a = 20");
+	eval(&calc, "f(x) = x 10 +");
+	eval(&calc, "g(x) = f(x) 2 *");
+	eval(&calc, "g(a)");
+	// g(20) = f(20) * 2 = (20 + 10) * 2
+
 
 	/* for(double i = 0; i < 10; i ++){ */
 	/* 	double ans = call_function(*calc.functions[0],i); */
@@ -57,7 +62,7 @@ void test_turing(){
 	/* } */
 
 
-	free_function(calc.functions[0]);
+	//free_function(calc.functions[0]);
 	//free_variable(calc.variables[0]);
 
 }

@@ -36,6 +36,7 @@ typedef struct token {
     char* value;
 } Token;
 
+double operate(char* operator, double a, double b);
 void free_token(Token* token);
 void tokenize(Token** tokens, int* size ,char* expression);
 double posfix_calculate(char* experssion);

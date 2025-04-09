@@ -210,6 +210,7 @@ double posfix_calculate_tokens(Token **tokens, int size){
 
 		}
 	}
+
 	double ans = POP(stack);
 	//printf("%lf\n",ans);
 

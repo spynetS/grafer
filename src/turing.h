@@ -30,7 +30,10 @@ void free_variable(Variable* var);
 void add_function(Calculator* calculator, char* name, Token** expression, int size);
 void add_variable(Calculator* calculator, char* name, double value);
 
-double call_function(Function function, double x);
+double call_function_name(Calculator *calc, char* name, double value);
+double call_function(Calculator *calc,Function function, double x);
 double eval(Calculator* calc, char *str);
+double eval_tokens(Calculator* calc, Token** tokens, int size);
+
 
 #endif // TURING_H_
