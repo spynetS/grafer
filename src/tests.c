@@ -24,7 +24,7 @@ void test_turing(){
 void test_graph(){
 	Calculator *calc = new_calculator();
 	calc->graph->x_min = -10;
-	eval(calc,"f(x) = x");\
+	eval(calc,"f(x) = x 10 - 2 ^ 10 +");
 	draw(calc, calc->functions[0]);
 }
 

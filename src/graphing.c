@@ -17,10 +17,10 @@ void setCharAt(int x, int y, char *c) {
 void draw(Calculator *calc, Function *func){
 	system("clear");
 	Graph *g = calc->graph;
-
-
-	for (int i = 0; i < g->width; i++) {
-		setCharAt(i*2,g->height,"- ");
+	int middle = -g->x_min;
+	// horizontal
+	for (int i = g->x_min; i < g->width; i++) {
+		setCharAt(i*2 ,g->height,"- ");
 		if(i % 2 == 0)
 		{
 			char str[10];
@@ -28,21 +28,25 @@ void draw(Calculator *calc, Function *func){
 			setCharAt(i*2,g->height+1,str);
 		}
 	}
-
+	// vertical
 	for (int i = g->height; i > 0; i--) {
-		setCharAt(3,i,"- ");
+		
+		setCharAt(3+middle*2,i,"- ");
 		if(i % 2 == 0)
 		{
 			char str[10];
 			sprintf(str,"%d ",i);
-			setCharAt(0,g->height-i,str);
+			setCharAt(middle*2,g->height-i,str);
 		}
 	}
 
 	for (int i = 0; i < g->width; i++) {
-		double value = call_function(calc,*func,i);
+		int x = g->x_min + i;
+		double value = call_function(calc,*func,x);
 		char str[10];
 		sprintf(str,"%lf",value);
+
+
 		setCharAt(3+i*2, g->height-value,"*");
 	}
 
