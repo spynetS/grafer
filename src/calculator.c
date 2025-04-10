@@ -1,4 +1,5 @@
 #include "calculator.h"
+#include "graphing.h"
 #include "tokenizer.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -11,6 +12,15 @@ Calculator *new_calculator(){
     Calculator *calc = malloc(sizeof(Calculator));
     calc->f_index = 0;
     calc->v_index = 0;
+
+	calc->graph = malloc(sizeof(Graph));
+	calc->graph->x_max = 10;
+	calc->graph->y_max = 10;
+	calc->graph->x_min = 0;
+	calc->graph->y_min = 0;
+	calc->graph->width = 30;
+	calc->graph->height = 50;
+	
     for (int i = 0; i < 10; i++) {
         calc->functions[i] = NULL;
         calc->variables[i] = NULL;
@@ -24,6 +34,7 @@ void free_calculator(Calculator* calc){
     for(int i = 0; i < calc->v_index; i++){
         free_variable(calc->variables[i]);
     }
+	free(calc->graph);
     free(calc);
 }
 

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include "graphing.h"
 #include "tokenizer.h"
 #include "calculator.h"
 
@@ -20,8 +21,17 @@ void test_turing(){
 	free_calculator(calc);
 }
 
+void test_graph(){
+	Calculator *calc = new_calculator();
+	calc->graph->x_min = -10;
+	eval(calc,"f(x) = x");\
+	draw(calc, calc->functions[0]);
+}
+
+
 int main(){
 	//test_tokenizer();
 	test_turing();
+	test_graph();
 	printf("All tests passed!\n");
 }

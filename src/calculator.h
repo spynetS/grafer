@@ -1,9 +1,18 @@
 #ifndef CALCULATOR_H_
 #define CALCULATOR_H_
 
-
-// holds the name to be called
 #include "tokenizer.h"
+
+
+typedef struct graph{
+	float x_min;
+    float x_max;
+    float y_min;
+    float y_max;
+    int width;      // in pixels
+    int height;     // in pixels
+} Graph;
+
 typedef struct function{
 	char* name;
 	Token** expression;
@@ -21,6 +30,7 @@ typedef struct calculator{
 	int f_index;
 	Variable *variables[10];
 	int v_index;
+	Graph *graph;
 
 } Calculator;
 
