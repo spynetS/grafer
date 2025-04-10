@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "graphing.h"
 #include "tokenizer.h"
 #include "calculator.h"
@@ -24,9 +25,14 @@ void test_turing(){
 void test_graph(){
 	Calculator *calc = new_calculator();
 	calc->graph->x_min = -10;
-	//eval(calc,"f(x) = x 10 - 2 ^ 5 +");
-	eval(calc,"f(x) = x 2 ^");
-	draw(calc, calc->functions[0]);
+	calc->graph->x_max = 20;
+	calc->graph->y_min = -10;
+	calc->graph->y_max = 50;
+	eval(calc,"g(x) = x 10 - 2 ^ 1 +");
+	eval(calc,"f(x) = x 4 * ");
+	system("clear");
+	//draw(calc, calc->functions[0]);
+	draw(calc, calc->functions[1]);
 }
 
 

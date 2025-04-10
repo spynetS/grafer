@@ -1,10 +1,39 @@
 #include "calculator.h"
 #include "graphing.h"
-
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <termios.h>
+#include <errno.h>
+#include <time.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
 
+int msleep(long msec)
+{
+    struct timespec ts;
+    int res;
+
+    if (msec < 0)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    ts.tv_sec = msec / 1000;
+    ts.tv_nsec = (msec % 1000) * 1000000;
+
+    do {
+        res = nanosleep(&ts, &ts);
+    } while (res && errno == EINTR);
+
+    return res;
+}
 void setCursorPosition(int x, int y) {
     printf("\033[%d;%dH", y+1, x+1);
 }
@@ -12,20 +41,23 @@ void setCursorPosition(int x, int y) {
 void setCharAt(int x, int y, char *c) {
     setCursorPosition(x, y);
     printf("%s",c);
+				fflush(stdout);
 }
 
 void draw(Calculator *calc, Function *func){
-	system("clear");
+
 	Graph *g = calc->graph;
 	int middle = -g->x_min;
 	// horizontal
-	for (int i = g->x_min; i < g->width; i++) {
-		setCharAt(i*2 ,g->height,"- ");
+	for (int i = g->x_min; i < g->x_max; i++) {
+		setCharAt(3+i*2 - g->x_min*2 ,g->height,"- ");
 		if(i % 2 == 0)
 		{
 			char str[10];
 			sprintf(str,"%d ",i);
-			setCharAt(i*2,g->height+1,str);
+			setCharAt(3+i*2 - g->x_min*2,g->height+1,str);
+
+
 		}
 	}
 	// vertical
@@ -39,21 +71,25 @@ void draw(Calculator *calc, Function *func){
 			setCharAt(middle*2,g->height-i,str);
 		}
 	}
-	int prev = 0;
-	for (int i = 0; i < g->width; i++) {
-		int x = g->x_min + i;
-		double value = call_function(calc,*func,x);
+	//double prev = call_function(calc,*func,g->x_min+10);
+	double prev = 0;
+	for (int i = g->x_min; i < g->x_max; i++) {
 
-		for(int j = 0; j < value-prev; j++){
-			setCharAt(3+i*2, g->height-value+j,".");
+		double value = call_function(calc,*func,i);
+		if(value > g->y_max) continue;
+		char str[100];
+
+		int min = value-prev < 0;
+		for(int j = 0;prev != 0 && j < ((int) abs(value-prev)) - min*2; j++){
+
+			/* sprintf(str,"%lf - %lf = %lf, %d %lf (%lf, %lf)",value,prev,value-prev,i,value, 3+i*2-g->x_min*2,g->height-value+j); */
+			/* setCharAt(50, 10,str); */
+			//setCharAt(3+i*2 - g->x_min * 2, g->height-value+j,"|");
+//			msleep(5);
 		}
 
 		prev = value;
-		char str[10];
-		sprintf(str,"%lf",value);
-
-
-		setCharAt(3+i*2, g->height-value,".");
+		setCharAt(3+i*2 - g->x_min * 2, g->height-value,"*");
 	}
 
 	setCharAt(g->width+5,g->height+5,"0");
