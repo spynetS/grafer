@@ -1,15 +1,39 @@
-#include "turing.h"
-#include "posfix.h"
+#include "calculator.h"
+#include "tokenizer.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 
-Variable* get_variable(Calculator *calc, char* name){
-    for(int i =0; i < calc->v_index; i ++){
-        if(strcmp(calc->variables[i]->name,name)==0){
-            return calc->variables[i];
+
+Calculator *new_calculator(){
+    Calculator *calc = malloc(sizeof(Calculator));
+    calc->f_index = 0;
+    calc->v_index = 0;
+    for (int i = 0; i < 10; i++) {
+        calc->functions[i] = NULL;
+        calc->variables[i] = NULL;
+    }
+    return calc;
+}
+void free_calculator(Calculator* calc){
+    for(int i = 0; i < calc->f_index; i++){
+        free_function(calc->functions[i]);
+    }
+    for(int i = 0; i < calc->v_index; i++){
+        free_variable(calc->variables[i]);
+    }
+    free(calc);
+}
+
+Variable* get_variable(Calculator *calc, char* name) {
+    if (!calc || !name) return NULL;
+
+    for (int i = 0; i < calc->v_index; i++) {
+        Variable* var = calc->variables[i];
+        if (var && var->name && strcmp(var->name, name) == 0) {
+            return var;
         }
     }
     return NULL;
@@ -35,11 +59,11 @@ void free_variable(Variable* var){
 }
 
 void print_tokens(Token** tokens, int size){
+    printf("TOKENS: ");
     for(int i = 0; i < size; i++){
-
         printf("%s ",type_string[tokens[i]->type]);
 	}
-    puts("");
+    printf("\nVALUE: ");
     for(int i = 0; i < size; i++){
         printf("%s ",tokens[i]->value);
 	}
@@ -75,15 +99,14 @@ double eval_tokens(Calculator* calc, Token** tokens, int size){
 
 	for(int i = 0; i < size; i++){
         Token* token = tokens[i];
-
-        if(tokens[i]->type == VARIABLE &&
+        if(i + 2 < size && tokens[i]->type == VARIABLE &&
            tokens[i+1]->type == EQUALS ){
             double value = eval_tokens(calc,&tokens[i+2], size-2);
             //printf("variable assignment %s = %lf\n",tokens[i]->value,value);
             add_variable(calc, tokens[i]->value, value);
-            i+= 2;
+            i += 2;
         }
-        else if(tokens[i]->type == FUNC &&
+        else if(i + 4 < size && tokens[i]->type == FUNC &&
            tokens[i+1]->type == O_P &&
            tokens[i+2]->type == VARIABLE &&
            tokens[i+3]->type == C_P &&
@@ -92,31 +115,42 @@ double eval_tokens(Calculator* calc, Token** tokens, int size){
             add_function(calc,  tokens[i]->value, &tokens[i+5],size-5);
             i+=5;
         }
-        else if(tokens[i]->type == FUNC &&
+        else if(i + 3 < size && tokens[i]->type == FUNC &&
            tokens[i+1]->type == O_P &&
            tokens[i+2]->type == VARIABLE &&
            tokens[i+3]->type == C_P){
-            Variable* parameter = get_variable(calc, tokens[i+2]->value);
-            if(parameter == NULL) {
+            Variable* variable = get_variable(calc, tokens[i+2]->value);
+
+            if(variable == NULL) {
                 printf("EROOR");
                 exit(1);
             }
-            double value = call_function_name(calc,token->value,parameter->value);
-            //printf("function %s(%lf) returns %lf\n",token->value,parameter->value,value);
-            PUSH(stack,value);
+
+            Function *func = get_function(calc,token->value);
+            if(func != NULL){
+                double value = call_function(calc,*func,variable->value);
+                //printf("function %s(%lf) returns %lf\n",token->value,variable->value,value);
+                PUSH(stack,value);
+            }
+
 
             i+=3; // move forward the tokens we checked in the if
         }
-        else if(tokens[i]->type == FUNC &&
+        else if(i + 3 < size && tokens[i]->type == FUNC &&
            tokens[i+1]->type == O_P &&
            tokens[i+2]->type == NUMBER &&
            tokens[i+3]->type == C_P) {
 
             double parameter;
             sscanf(tokens[i+2]->value,"%lf",&parameter);
-            double value = call_function_name(calc,token->value,parameter);
-            printf("function %s(%lf) returns %lf\n",token->value,parameter,value);
-            PUSH(stack,value);
+
+            Function *func = get_function(calc,token->value);
+            if(func != NULL){
+                double value = call_function(calc,*func,parameter);
+                //printf("function %s(%lf) returns %lf\n",token->value,parameter,value);
+                PUSH(stack,value);
+
+            }
 
             i+=3; // move forward the tokens we checked in the if
         }
@@ -128,7 +162,6 @@ double eval_tokens(Calculator* calc, Token** tokens, int size){
                         printf("NO VARIABLE WITH %s\n",token->value);
                     }
                     else{
-                        printf("Variable %s holds %lf\n",token->value,variable->value);
                         PUSH(stack,variable->value);
                     }
                     break;
@@ -157,36 +190,50 @@ double eval_tokens(Calculator* calc, Token** tokens, int size){
     return ans;
 }
 
-double call_function_name(Calculator *calc, char* name, double value){
-    for(int i = 0; i < calc->f_index; i ++){
-        if(strcmp(calc->functions[i]->name,name)==0){
-            return call_function(calc,*calc->functions[i], value);
+Function* get_function(Calculator *calc, char* name) {
+    if (!calc || !name) return NULL;
+
+    for (int i = 0; i < calc->f_index; i++) {
+        Function* f = calc->functions[i];
+        if (f && f->name && strcmp(f->name, name) == 0) {
+            return f;
         }
     }
-    return 69;
+    return NULL;
 }
 
-double call_function(Calculator *calc, Function function, double x){
+double call_function(Calculator *calc, Function function, double x) {
+    // Deep copy of function tokens
+    Token** copied_tokens = malloc(sizeof(Token*) * function.size);
 
-    char* ptr;
-    for(int i = 0; i < function.size; i++){
-        // instead of x here add a parameter value to the function and pass in
-        // that also in the function to let the user set what name of the parameter
-        // they want
-        if(strcmp(function.expression[i]->value,"x")==0){
-            char* cpy = strdup(function.expression[i]->value);
+    for (int i = 0; i < function.size; i++) {
+        copied_tokens[i] = malloc(sizeof(Token));
+        copied_tokens[i]->type = function.expression[i]->type;
+
+        copied_tokens[i]->value = strdup(function.expression[i]->value);
+
+        if (strcmp(copied_tokens[i]->value, "x") == 0) {
+            // Replace "x" with value of x
             char repl[100];
-            sprintf(repl,"%lf",x);
-            ptr = function.expression[i]->value;
-            strcpy(function.expression[i]->value,repl);
-            function.expression[i]->type=NUMBER;
+            sprintf(repl, "%lf", x);
+            free(copied_tokens[i]->value);
+            copied_tokens[i]->value = strdup(repl);
+            copied_tokens[i]->type = NUMBER;
         }
+    }
 
-	}
-    double ans = eval_tokens(calc,function.expression,function.size);
-    strcpy(ptr,"x");
+    double ans = eval_tokens(calc, copied_tokens, function.size);
+
+    // Free the copied tokens
+    for (int i = 0; i < function.size; i++) {
+        free(copied_tokens[i]->value);
+        free(copied_tokens[i]);
+    }
+    free(copied_tokens);
+
     return ans;
 }
+
 
 void add_function(Calculator* calculator, char *name, Token **expression, int size){
 
@@ -217,10 +264,11 @@ void add_variable(Calculator* calculator, char* name, double value){
             return;
         }
     }
+
     Variable* var = malloc(sizeof(Variable));
     var->name = malloc(sizeof(char)*strlen(name)+1);
 
     strcpy(var->name,name);
     var->value = value;
-    calculator->variables[calculator->v_index++] = var;
+    calculator->variables[(calculator->v_index)++] = var;
 }

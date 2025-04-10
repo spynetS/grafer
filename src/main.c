@@ -1,13 +1,11 @@
 #include <stdio.h>
-#include "./posfix.h"
-#include "./turing.h"
+#include "./tokenizer.h"
+#include "./calculator.h"
 #include <string.h>
 
 int main(){
 
-	Calculator calc;
-	calc.v_index = 0;
-	calc.f_index = 0;
+	Calculator *calc = new_calculator();
 
 	while(1){
 		printf("> ");
@@ -20,7 +18,7 @@ int main(){
 		}
 		printf("'%s'\n",str);
 
-		double value = eval(&calc,str);
+		double value = eval(calc,str);
 
 		printf("%lf\n",value);
 	}

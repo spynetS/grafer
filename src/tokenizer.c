@@ -1,5 +1,5 @@
 #include <ctype.h>
-#include "posfix.h"
+#include "tokenizer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,28 +9,27 @@
 #include <stdbool.h>
 
 bool is_number(const char *str) {
-    char *endptr;
-    strtod(str, &endptr); // use strtol for integers
-    return *str != '\0' && *endptr == '\0'; // must consume whole string
+	char *endptr;
+	strtod(str, &endptr); // use strtol for integers
+	return *str != '\0' && *endptr == '\0'; // must consume whole string
 }
 
 
-
 void trim(char* str) {
-    // Check for NULL string
-    if (str == NULL) return;
+	// Check for NULL string
+	if (str == NULL) return;
 
-    // Trim leading spaces
-    while (isspace((unsigned char)*str)) {
-        str++;
-    }
+	// Trim leading spaces
+	while (isspace((unsigned char)*str)) {
+		str++;
+	}
 
-    // Trim trailing spaces
-    int len = strlen(str);
-    while (len > 0 && isspace((unsigned char)str[len - 1])) {
-        str[len - 1] = '\0';
-        len--;
-    }
+	// Trim trailing spaces
+	int len = strlen(str);
+	while (len > 0 && isspace((unsigned char)str[len - 1])) {
+		str[len - 1] = '\0';
+		len--;
+	}
 }
 
 
@@ -135,7 +134,7 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 		else if(value == ' '){
 			trim(buffer);
 			if (strcmp(buffer,"") == 0 || strcmp(buffer," ") == 0){
-				puts("empty value, continuing");
+				//puts("empty value, continuing");
 				continue;
 			}
 			if(is_number(buffer)){
@@ -174,55 +173,4 @@ void free_token(Token* token){
 		free(token->value);
 		free(token);
 	}
-}
-
-double posfix_calculate(char *expression){
-
-	Token* tokens[128];
-	int size = 0;
-	tokenize(tokens,&size,expression);
-	double ans = posfix_calculate_tokens(tokens, size);
-	for(int i =0 ; i < size; i ++){
-		free_token(tokens[i]);
-	}
-	return ans;
-}
-
-double posfix_calculate_tokens(Token **tokens, int size){
-
-	Stack(double) stack;
-	INIT_STACK(stack);
-
-	for(int i = 0; i < size;i ++){
-
-		Token* token = tokens[i];
-
-		//printf("%s\n",token->value);
-		switch(token->type){
-			case NUMBER:
-
-				double number;
-				sscanf(token->value,"%lf",&number);
-				//printf("adds number %lf to stack\n",number);
-				PUSH(stack,number);
-			break;
-			case OPERATOR:
-				//printf("pops from stack\n");
-				double b = POP(stack);
-				double a = POP(stack);
-
-				double ans = operate(token->value,a,b);
-
-				//printf("%lf %s %lf = %lf \n", a,token->value, b,ans);
-				PUSH(stack,ans);
-			break;
-
-		}
-	}
-
-	double ans = POP(stack);
-	//printf("%lf\n",ans);
-
-
-	return ans;
 }

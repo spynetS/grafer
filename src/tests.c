@@ -1,73 +1,27 @@
 #include <assert.h>
 #include <stdio.h>
-#include "posfix.h"
-#include "turing.h"
-
-
-void test_posfix_calculate() {
-	// Basic arithmetic assert(posfix_calculate("3 4 +") == 7.0);
-	assert(posfix_calculate("10 5 -") == 5.0);
-	assert(posfix_calculate("2 3 *") == 6.0);
-	assert(posfix_calculate("8 2 /") == 4.0);
-
-	// Multiple operations
-	assert(posfix_calculate("2 3 + 5 *") == 25.0);
-	assert(posfix_calculate("5 1 2 + 4 * + 3 -") == 14.0);
-	assert(posfix_calculate("10 2 8 * + 3 -") == 23.0);
-
-	// Repeated operations
-	assert(posfix_calculate("1 2 + 3 + 4 + 5 +") == 15.0);
-
-	// decimals
-	assert(posfix_calculate("2.2 2.2 +") == 4.4);
-	assert(posfix_calculate("2 5 /") == 0.4);
-
-
-	// Edge cases
-	assert(posfix_calculate("5") == 5.0);
-	assert(posfix_calculate("2 10 10 + -") == -18.0);
-
-}
-
-void test_tokenizer(){
-	Token* tokens[10];
-	int size = 0;
-
-	tokenize(tokens,&size,"x = 2 2 * ");
-	for(int i = 0; i < size; i++){
-		printf("%s ",type_string[tokens[i]->type]);
-	}
-	puts("");
-	for(int i = 0; i < size; i++){
-		printf("%s ",tokens[i]->value);
-	}
-	puts("");
-}
+#include "tokenizer.h"
+#include "calculator.h"
 
 void test_turing(){
-	Calculator calc;
-	calc.f_index = 0;
-	calc.v_index = 0;
+	Calculator *calc = new_calculator();
 
-	eval(&calc, "x = 20");
-	eval(&calc, "f(x) = x 10 +");
-	eval(&calc, "g(x) = f(x) 2 *");
+	// settings some values
+	eval(calc, "x = 10");
+	eval(calc, "f(x) = x 10 +");
+	eval(calc, "g(x) = f(x) 2 *");
 
-	assert(eval(&calc,"x") == 20);
-	assert(eval(&calc,"f(10)") == 20);
+	// testing the values
+	assert(eval(calc,"10 10 2 * +") == 30);
+	assert(eval(calc,"x") == 10);
+	assert(eval(calc,"f(10)") == 20);
+	assert(eval(calc, "g(x)")== 40);
 
-	assert(eval(&calc, "g(x)")==60);
-	
-
-	//free_function(calc.functions[0]);
-	//free_variable(calc.variables[0]);
-
+	free_calculator(calc);
 }
 
 int main(){
-	test_posfix_calculate();
 	//test_tokenizer();
 	test_turing();
-//	printf("%lf\n",posfix_calculate("x = 10 10 +"));
 	printf("All tests passed!\n");
 }

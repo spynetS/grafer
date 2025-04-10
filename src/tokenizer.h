@@ -1,5 +1,5 @@
-#ifndef POSFIX_H_
-#define POSFIX_H_
+#ifndef TOKENIZER_H_
+#define TOKENIZER_H_
 
 #define MAX_SIZE 100
 
@@ -37,10 +37,8 @@ typedef struct token {
 } Token;
 
 double operate(char* operator, double a, double b);
-void free_token(Token* token);
-void tokenize(Token** tokens, int* size ,char* expression);
-double posfix_calculate(char* experssion);
-double posfix_calculate_tokens(Token **tokens, int size);
+void   free_token(Token* token);
+void   tokenize(Token** tokens, int* size ,char* expression);
 
 
-#endif // POSFIX_H_
+#endif // TOKENIZER_H_
