@@ -39,15 +39,21 @@ void draw(Calculator *calc, Function *func){
 			setCharAt(middle*2,g->height-i,str);
 		}
 	}
-
+	int prev = 0;
 	for (int i = 0; i < g->width; i++) {
 		int x = g->x_min + i;
 		double value = call_function(calc,*func,x);
+
+		for(int j = 0; j < value-prev; j++){
+			setCharAt(3+i*2, g->height-value+j,".");
+		}
+
+		prev = value;
 		char str[10];
 		sprintf(str,"%lf",value);
 
 
-		setCharAt(3+i*2, g->height-value,"*");
+		setCharAt(3+i*2, g->height-value,".");
 	}
 
 	setCharAt(g->width+5,g->height+5,"0");
