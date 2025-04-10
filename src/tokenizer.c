@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include "tokenizer.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,7 @@ int is_operator(const char* operator){
 	if(strcmp(operator,"-")==0) return 1;
 	if(strcmp(operator,"*")==0) return 1;
 	if(strcmp(operator,"/")==0) return 1;
+	if(strcmp(operator,"^")==0) return 1;
 	return 0;
 }
 
@@ -47,6 +49,7 @@ double operate(char* operator, double a, double b){
 	if(strcmp(operator,"+")==0) return a+b;
 	else if(strcmp(operator,"-")==0) return a-b;
 	else if(strcmp(operator,"*")==0) return a*b;
+	else if(strcmp(operator,"^")==0) return pow(a, b);
 	else if(strcmp(operator,"/")==0) return a/b;
 
 	return -1;

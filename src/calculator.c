@@ -95,7 +95,7 @@ double eval_tokens(Calculator* calc, Token** tokens, int size){
     // replace all variables with the value if exists
     // repalce function calls with function calls if exists
 
-    //print_tokens(tokens,size);
+    print_tokens(tokens,size);
 
 	for(int i = 0; i < size; i++){
         Token* token = tokens[i];
