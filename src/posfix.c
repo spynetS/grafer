@@ -111,6 +111,9 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 			buf_index = 0;
 		}
 		else if(value == '='){
+			// if prev was not a )
+			// then it should be a variable
+
 			add_token(tokens,size,EQUALS,"=");
 			buffer[0]='\0';
 			buf_index = 0;
@@ -154,7 +157,13 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 
 		}
 		else{
-			add_token(tokens,size,NUMBER,buffer);
+			if(is_number(buffer)){
+				add_token(tokens,size,NUMBER, buffer);
+			}
+			else{
+				add_token(tokens,size,VARIABLE, buffer);
+			}
+
 		}
 	}
 	free(buffer);

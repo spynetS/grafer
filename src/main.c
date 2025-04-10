@@ -1,19 +1,31 @@
 #include <stdio.h>
 #include "./posfix.h"
+#include "./turing.h"
+#include <string.h>
 
 int main(){
 
-	char str[120];
+	Calculator calc;
+	calc.v_index = 0;
+	calc.f_index = 0;
 
-	fgets(str, sizeof(str), stdin);  // Reads a line from stdin into str
+	while(1){
+		printf("> ");
+		char str[120];
+		fgets(str, sizeof(str), stdin);  // Reads a line from stdin into str
 
-	// Remove newline character if present
-	//str[strcspn(str, "\n")] = 0;
-	printf("%s",str);
+		str[strlen(str)-1] = '\0';
+		if(strcmp(str,"exit") == 0){
+			break;
+		}
+		printf("'%s'\n",str);
+
+		double value = eval(&calc,str);
+
+		printf("%lf\n",value);
+	}
 
 
-	double value = posfix_calculate(str);
-	printf("%lf\n",value);
 
 	return 0;
 }

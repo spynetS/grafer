@@ -49,18 +49,15 @@ void test_turing(){
 	calc.f_index = 0;
 	calc.v_index = 0;
 
-	eval(&calc, "a = 20");
+	eval(&calc, "x = 20");
 	eval(&calc, "f(x) = x 10 +");
 	eval(&calc, "g(x) = f(x) 2 *");
-	eval(&calc, "g(a)");
-	// g(20) = f(20) * 2 = (20 + 10) * 2
 
+	assert(eval(&calc,"x") == 20);
+	assert(eval(&calc,"f(10)") == 20);
 
-	/* for(double i = 0; i < 10; i ++){ */
-	/* 	double ans = call_function(*calc.functions[0],i); */
-	/* 	printf("f(%lf) = %lf\n",i,ans); */
-	/* } */
-
+	assert(eval(&calc, "g(x)")==60);
+	
 
 	//free_function(calc.functions[0]);
 	//free_variable(calc.variables[0]);
