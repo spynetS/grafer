@@ -245,26 +245,48 @@ double call_function(Calculator *calc, Function function, double x) {
     return ans;
 }
 
+void add_function(Calculator* calculator, char *name, Token **expression, int size) {
+    // Check if function with that name exists
+    for (int i = 0; i < calculator->f_index; i++) {
+        if (strcmp(calculator->functions[i]->name, name) == 0) {
+            // Free old expression
+            for (int j = 0; j < calculator->functions[i]->size; j++) {
+                free(calculator->functions[i]->expression[j]->value);
+                free(calculator->functions[i]->expression[j]);
+            }
+            free(calculator->functions[i]->expression);
 
-void add_function(Calculator* calculator, char *name, Token **expression, int size){
+            // Allocate new expression
+            calculator->functions[i]->expression = malloc(sizeof(Token*) * size);
+            for (int j = 0; j < size; j++) {
+                Token *token = malloc(sizeof(Token));
+                token->type = expression[j]->type;
+                token->value = malloc(strlen(expression[j]->value) + 1);
+                strcpy(token->value, expression[j]->value);
+                calculator->functions[i]->expression[j] = token;
+            }
+            calculator->functions[i]->size = size;
+            return;
+        }
+    }
 
+    // If function does not exist, add new
     Function *function = malloc(sizeof(Function));
-    function->expression = malloc(sizeof(Token*)*size);
+    function->expression = malloc(sizeof(Token*) * size);
 
-    for(int i = 0 ; i < size; i ++){
-        Token* token = malloc(sizeof(Token));
-
+    for (int i = 0; i < size; i++) {
+        Token *token = malloc(sizeof(Token));
         token->type = expression[i]->type;
-        token->value = malloc(sizeof(char)*strlen(expression[i]->value)+1);
+        token->value = malloc(strlen(expression[i]->value) + 1);
         strcpy(token->value, expression[i]->value);
         function->expression[i] = token;
     }
 
     function->size = size;
-    function->name = malloc(sizeof(char)*strlen(name)+1);
-    strcpy(function->name,name);
+    function->name = malloc(strlen(name) + 1);
+    strcpy(function->name, name);
 
-	calculator->functions[calculator->f_index++] = function;
+    calculator->functions[calculator->f_index++] = function;
 }
 
 void add_variable(Calculator* calculator, char* name, double value){

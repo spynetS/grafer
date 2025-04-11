@@ -19,6 +19,9 @@ void test_turing(){
 	assert(eval(calc,"f(10)") == 20);
 	assert(eval(calc, "g(x)")== 40);
 
+	eval(calc,"f(x) = x 10 -");
+	assert(eval(calc,"f(10)")==0);
+
 	free_calculator(calc);
 }
 
