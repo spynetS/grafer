@@ -34,9 +34,11 @@ void test_graph(){
 
 	eval(calc,"g(x) = x 10 - 2 ^ 1 +");
 	eval(calc,"f(x) = x 10 +");
+	eval(calc,"h(x) = x 3 ^");
 	system("clear");
 	draw(calc, calc->functions[0]);
 	draw(calc, calc->functions[1]);
+	//draw(calc, calc->functions[2]);
 }
 
 

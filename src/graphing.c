@@ -69,7 +69,7 @@ void setCharAt(Graph *g, int x, int y, char *c) {
     setCursorPosition(x*3+abs(g->x_min)*3,  g->height-(y-g->y_min));
     printf("%s",c);
 	fflush(stdout);
-	msleep(10);
+	//msleep(10);
 }
 
 void draw(Calculator *calc, Function *func)
@@ -98,16 +98,19 @@ void draw(Calculator *calc, Function *func)
 	}
 	double prev = 0;
 	// function
-	for(int x = g->x_min; x < g->x_max; x ++){
-		double value = call_function(calc, *func, x);
-		if(value*3-abs(g->y_min)*3 > g->height) continue;
-		for(int i = 0; prev != 0 && i < abs(value-prev); i ++)
-		{
-			setCharAt(g, x, i+value, BLUE".");
-		}
-		prev = value;
-		setCharAt(g, x, value, "*");
-	}
+double step = 0.1;  // Smaller step for smoother curves
+
+for(double x = g->x_min; x < g->x_max; x += step) {
+    double y = call_function(calc, *func, x);
+
+    if (y < g->y_min || y > g->y_max)
+        continue;
+
+    int screen_x = (int)(x); // Or apply scaling
+    int screen_y = (int)(y);
+
+    setCharAt(g, screen_x, screen_y, BLUE"*"RESET);
+}
 
 
 	setCharAt(g,g->width, g->y_min-2, "");
