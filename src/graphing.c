@@ -74,6 +74,10 @@ void setCharAt(Graph *g, int x, int y, char *c) {
 
 void draw(Calculator *calc, Function *func)
 {
+	if (func == NULL){
+		printf("NO FUNCTION PROVIDED\n");
+		return;
+	}
 	Graph *g = calc->graph;
 	//g->x_max = 10;
 

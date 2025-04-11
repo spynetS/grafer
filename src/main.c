@@ -18,15 +18,47 @@ int main(){
 		if(strcmp(str,"exit") == 0){
 			break;
 		}
-		else if (strcmp(str,"plot")==0){
-			calc->graph->x_min = -10;
+		if(strcmp(str,"clear") == 0){
 			system("clear");
-			draw(calc, calc->functions[0]);
+			continue;
 		}
+	  if (strncmp(str, "plot", 4) == 0) {
+			char fname[32];
+			int x_min, x_max, y_min, y_max;
+
+			// Parse: plot f -10 20 -10 20
+			if (sscanf(str, "plot %s %d %d %d %d", fname, &x_min, &x_max, &y_min, &y_max) == 5) {
+				// Find the function by name
+				Function *target = NULL;
+				for (int i = 0; i < calc->f_index; i++) {
+					if (strcmp(calc->functions[i]->name, fname) == 0) {
+						target = calc->functions[i];
+						break;
+					}
+				}
+
+				if (target == NULL) {
+					printf("Function '%s' not found.\n", fname);
+					continue;
+				}
+
+				calc->graph->x_min = x_min;
+				calc->graph->x_max = x_max;
+				calc->graph->y_min = y_min;
+				calc->graph->y_max = y_max;
+
+				system("clear");
+				draw(calc, target);
+				puts("");
+			} else {
+				printf("Usage: plot <function> <x_min> <x_max> <y_min> <y_max>\n");
+			}
+
+			continue;
+		}
+
 		printf("'%s'\n",str);
-
 		double value = eval(calc,str);
-
 		printf("%lf\n",value);
 	}
 
