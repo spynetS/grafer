@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "./tokenizer.h"
 #include "./calculator.h"
+#include "graphing.h"
+#include <stdlib.h>
 #include <string.h>
 
 int main(){
@@ -15,6 +17,11 @@ int main(){
 		str[strlen(str)-1] = '\0';
 		if(strcmp(str,"exit") == 0){
 			break;
+		}
+		else if (strcmp(str,"plot")==0){
+			calc->graph->x_min = -10;
+			system("clear");
+			draw(calc, calc->functions[0]);
 		}
 		printf("'%s'\n",str);
 

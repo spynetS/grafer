@@ -27,11 +27,12 @@ void test_graph(){
 	calc->graph->x_min = -10;
 	calc->graph->x_max = 20;
 	calc->graph->y_min = -10;
-	calc->graph->y_max = 50;
+	calc->graph->y_max = 30;
+
 	eval(calc,"g(x) = x 10 - 2 ^ 1 +");
-	eval(calc,"f(x) = x 4 * ");
+	eval(calc,"f(x) = x 10 +");
 	system("clear");
-	//draw(calc, calc->functions[0]);
+	draw(calc, calc->functions[0]);
 	draw(calc, calc->functions[1]);
 }
 

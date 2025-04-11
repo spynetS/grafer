@@ -14,6 +14,33 @@
 #include <sys/ioctl.h>
 #include <stdio.h>
 
+#define BG_BLACK  "\x1b[40m"
+#define BG_RED    "\x1b[41m"
+#define BG_GREEN  "\x1b[42m"
+#define BG_YELLOW "\x1b[43m"
+#define BG_BLUE   "\x1b[44m"
+#define BG_PURPLE "\x1b[45m"
+#define BG_CYAN   "\x1b[46m"
+#define BG_WHITE  "\x1b[47m"
+
+
+#define BLACK  "\x1b[30m"
+#define RED    "\x1b[31m"
+#define GREEN  "\x1b[32m"
+#define YELLOW "\x1b[33m"
+#define BLUE   "\x1b[34m"
+#define PURPLE "\x1b[35m"
+#define CYAN   "\x1b[36m"
+#define WHITE  "\x1b[37m"
+#define BG     "██"
+
+#define RESET "\x1b[0m"
+#define BG_RESET "\x1b[10m"
+
+#define HIDE_CURSOR "\033[?25l"
+#define SHOW_CURSOR "\033[?25h"
+
+
 int msleep(long msec)
 {
     struct timespec ts;
@@ -38,59 +65,46 @@ void setCursorPosition(int x, int y) {
     printf("\033[%d;%dH", y+1, x+1);
 }
 
-void setCharAt(int x, int y, char *c) {
-    setCursorPosition(x, y);
+void setCharAt(Graph *g, int x, int y, char *c) {
+    setCursorPosition(x*3+abs(g->x_min)*3,  g->height-(y-g->y_min));
     printf("%s",c);
-				fflush(stdout);
+	fflush(stdout);
+	msleep(10);
 }
 
-void draw(Calculator *calc, Function *func){
-
+void draw(Calculator *calc, Function *func)
+{
 	Graph *g = calc->graph;
-	int middle = -g->x_min;
-	// horizontal
-	for (int i = g->x_min; i < g->x_max; i++) {
-		setCharAt(3+i*2 - g->x_min*2 ,g->height,"- ");
-		if(i % 2 == 0)
-		{
-			char str[10];
-			sprintf(str,"%d ",i);
-			setCharAt(3+i*2 - g->x_min*2,g->height+1,str);
+	//g->x_max = 10;
 
-
-		}
-	}
 	// vertical
-	for (int i = g->height; i > 0; i--) {
-		
-		setCharAt(3+middle*2,i,"- ");
-		if(i % 2 == 0)
-		{
-			char str[10];
-			sprintf(str,"%d ",i);
-			setCharAt(middle*2,g->height-i,str);
-		}
+	for(int i = g->y_min; i < g->y_max; i ++){
+		setCharAt(g,0,i,RESET"+");
+		char str[10];
+		sprintf(str,"%d",i);
+		setCharAt(g,-1, i, str);
 	}
-	//double prev = call_function(calc,*func,g->x_min+10);
+	// horizontal
+	for(int i = g->x_min; i < g->x_max; i ++){
+
+		setCharAt(g,i, 0, "-");
+		char str[10];
+		sprintf(str,"%d",i);
+		setCharAt(g,i, -1, str);
+	}
 	double prev = 0;
-	for (int i = g->x_min; i < g->x_max; i++) {
-
-		double value = call_function(calc,*func,i);
-		if(value > g->y_max) continue;
-		char str[100];
-
-		int min = value-prev < 0;
-		for(int j = 0;prev != 0 && j < ((int) abs(value-prev)) - min*2; j++){
-
-			/* sprintf(str,"%lf - %lf = %lf, %d %lf (%lf, %lf)",value,prev,value-prev,i,value, 3+i*2-g->x_min*2,g->height-value+j); */
-			/* setCharAt(50, 10,str); */
-			//setCharAt(3+i*2 - g->x_min * 2, g->height-value+j,"|");
-//			msleep(5);
+	// function
+	for(int x = g->x_min; x < g->x_max; x ++){
+		double value = call_function(calc, *func, x);
+		if(value*3-abs(g->y_min)*3 > g->height) continue;
+		for(int i = 0; prev != 0 && i < abs(value-prev); i ++)
+		{
+			setCharAt(g, x, i+value, BLUE".");
 		}
-
 		prev = value;
-		setCharAt(3+i*2 - g->x_min * 2, g->height-value,"*");
+		setCharAt(g, x, value, "*");
 	}
 
-	setCharAt(g->width+5,g->height+5,"0");
+
+	setCharAt(g,g->width, g->y_min-2, "");
 }
