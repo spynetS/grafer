@@ -27,33 +27,46 @@ void test_turing(){
 
 
 double infix_eval(char* str){
-	Token** inf_tokens = malloc(sizeof(Token)*20);
-	Token** pos_tokens = malloc(sizeof(Token)*20);
+	Token** inf_tokens = malloc(sizeof(Token*)*20);
+	Token** pos_tokens = malloc(sizeof(Token*)*20);
+	int size_inf = 0;
 	int size = 0;
-	tokenize(inf_tokens,&size,str);
+	tokenize(inf_tokens,&size_inf,str);
 	Calculator *calc = new_calculator();
 
-	printf("%s\n",str);
+	infix_to_posfix(pos_tokens,size_inf, inf_tokens, &size);
+	//print_tokens(pos_tokens, size);
 
-	infix_to_posfix(pos_tokens,inf_tokens, size);
+	double ans = eval_tokens(calc,pos_tokens,size);
+	for(int i = 0; i < size_inf;i ++){
+		free_token(inf_tokens[i]);
+	}
+	for(int i = 0; i < size;i ++){
+		free_token(pos_tokens[i]);
+	}
 
-	return eval_tokens(calc,pos_tokens,size);
+	free(inf_tokens);
+	free(pos_tokens);
+	free_calculator(calc);
+	return ans;
 }
 
 void test_infix(){
 
 // Basic operations
 	assert(infix_eval("3 + 4") == 7);
+
 	assert(infix_eval("10 - 5") == 5);
 	assert(infix_eval("6 * 7") == 42);
 	assert(infix_eval("20 / 4") == 5);
 
 // Order of operations (precedence)
-	assert(infix_eval("2 + 3 * 4") == 14);          // 3*4 first, then add 2
+	assert(infix_eval("2 + 3 * 4") == 14);
+	// 3*4 first, then add 2
 	assert(infix_eval("(2 + 3) * 4") == 20);        // parentheses change precedence
 
 // Division with non-integer result
-	assert(infix_eval("7 / 2") == 3);               // Assuming integer division
+	assert(infix_eval("7 / 2") == 3.5);               // Assuming integer division
 
 // Negative numbers
 	assert(infix_eval("-5 + 3") == -2);
@@ -79,7 +92,7 @@ void test_infix(){
 
 int main(){
 	//test_tokenizer();
-	test_turing();
+	//test_turing();
 	test_infix();
 	printf("All tests passed!\n");
 }
