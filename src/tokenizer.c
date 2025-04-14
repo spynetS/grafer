@@ -69,6 +69,18 @@ void add_token(Token** tokens, int* size,Type type, char* buffer){
 
 }
 
+void print_tokens(Token** tokens, int size){
+    printf("TOKENS: ");
+    for(int i = 0; i < size; i++){
+        printf("%s ",type_string[tokens[i]->type]);
+	}
+    printf("\nVALUE: ");
+    for(int i = 0; i < size; i++){
+        printf("%s ",tokens[i]->value);
+	}
+    puts("");
+}
+
 /*
  * Will go through a posfix expression an tokenize it.
  * It will add a Token allocated on the heap in the tokens

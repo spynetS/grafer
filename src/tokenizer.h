@@ -10,6 +10,7 @@
         int top;           \
     }
 
+
 // Macros to initialize the stack, push, pop, and peek operations
 #define INIT_STACK(stack)    (stack).top = -1
 #define IS_EMPTY(stack)      ((stack).top == -1)
@@ -36,7 +37,11 @@ typedef struct token {
     char* value;
 } Token;
 
+
+void print_tokens(Token** tokens, int size);
+
 double operate(char* operator, double a, double b);
+
 void   free_token(Token* token);
 void   tokenize(Token** tokens, int* size ,char* expression);
 

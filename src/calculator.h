@@ -29,7 +29,6 @@ void free_calculator(Calculator* calc);
 void free_function(Function* func);
 void free_variable(Variable* var);
 
-
 void add_function(Calculator* calculator, char* name, Token** expression, int size);
 void add_variable(Calculator* calculator, char* name, double value);
 

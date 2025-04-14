@@ -58,17 +58,6 @@ void free_variable(Variable* var){
     }
 }
 
-void print_tokens(Token** tokens, int size){
-    printf("TOKENS: ");
-    for(int i = 0; i < size; i++){
-        printf("%s ",type_string[tokens[i]->type]);
-	}
-    printf("\nVALUE: ");
-    for(int i = 0; i < size; i++){
-        printf("%s ",tokens[i]->value);
-	}
-    puts("");
-}
 double eval(Calculator* calc, char *str){
 
     Token** tokens = malloc(sizeof(Token)*100);
