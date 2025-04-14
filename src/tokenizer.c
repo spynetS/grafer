@@ -85,7 +85,6 @@ void print_tokens(Token** tokens, int size){
  * Will go through a posfix expression an tokenize it.
  * It will add a Token allocated on the heap in the tokens
  * array.
- *
  * */
 void tokenize(Token** tokens, int* size ,char* expression) {
 

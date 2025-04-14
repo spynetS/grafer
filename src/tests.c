@@ -26,13 +26,12 @@ void test_turing(){
 }
 
 
-double infix_eval(char* str){
+double infix_eval(Calculator *calc, char* str){
 	Token** inf_tokens = malloc(sizeof(Token*)*20);
 	Token** pos_tokens = malloc(sizeof(Token*)*20);
 	int size_inf = 0;
 	int size = 0;
 	tokenize(inf_tokens,&size_inf,str);
-	Calculator *calc = new_calculator();
 
 	infix_to_posfix(pos_tokens,size_inf, inf_tokens, &size);
 	//print_tokens(pos_tokens, size);
@@ -47,45 +46,51 @@ double infix_eval(char* str){
 
 	free(inf_tokens);
 	free(pos_tokens);
-	free_calculator(calc);
+
 	return ans;
 }
 
 void test_infix(){
 
 // Basic operations
-	assert(infix_eval("3 + 4") == 7);
+	Calculator *calc = new_calculator();
+	free_calculator(calc);
 
-	assert(infix_eval("10 - 5") == 5);
-	assert(infix_eval("6 * 7") == 42);
-	assert(infix_eval("20 / 4") == 5);
+	infix_eval(calc,"x = 3 + 4");
+
+	assert(infix_eval(calc,"x") == 7);
+	assert(infix_eval(calc,"x + 3") == 10);
+
+	assert(infix_eval(calc,"10 - 5") == 5);
+	assert(infix_eval(calc,"6 * 7") == 42);
+	assert(infix_eval(calc,"20 / 4") == 5);
 
 // Order of operations (precedence)
-	assert(infix_eval("2 + 3 * 4") == 14);
+	assert(infix_eval(calc,"2 + 3 * 4") == 14);
 	// 3*4 first, then add 2
-	assert(infix_eval("(2 + 3) * 4") == 20);        // parentheses change precedence
+	assert(infix_eval(calc,"(2 + 3) * 4") == 20);        // parentheses change precedence
 
 // Division with non-integer result
-	assert(infix_eval("7 / 2") == 3.5);               // Assuming integer division
+	assert(infix_eval(calc,"7 / 2") == 3.5);               // Assuming integer division
 
 // Negative numbers
-	assert(infix_eval("-5 + 3") == -2);
-	assert(infix_eval("3 + -5") == -2);
-	assert(infix_eval("-3 * 4") == -12);
+	assert(infix_eval(calc,"-5 + 3") == -2);
+	assert(infix_eval(calc,"3 + -5") == -2);
+	assert(infix_eval(calc,"-3 * 4") == -12);
 
 // Nested parentheses
-	assert(infix_eval("((2 + 3) * (4 + 1))") == 25);
-	assert(infix_eval("((1 + 2) + (3 + 4))") == 10);
+	assert(infix_eval(calc,"((2 + 3) * (4 + 1))") == 25);
+	assert(infix_eval(calc,"((1 + 2) + (3 + 4))") == 10);
 
 // More complex expressions
-	assert(infix_eval("5 + 3 * (10 - 4) / 2") == 14);  // 5 + (3 * 6 / 2) = 5 + 9
+	assert(infix_eval(calc,"5 + 3 * (10 - 4) / 2") == 14);  // 5 + (3 * 6 / 2) = 5 + 9
 
 // Whitespaces
-	assert(infix_eval("   8  *  2 ") == 16);
+	assert(infix_eval(calc,"   8  *  2 ") == 16);
 
 // Zero
-	assert(infix_eval("0 + 5") == 5);
-	assert(infix_eval("0 * 100") == 0);
+	assert(infix_eval(calc,"0 + 5") == 5);
+	assert(infix_eval(calc,"0 * 100") == 0);
 
 }
 
