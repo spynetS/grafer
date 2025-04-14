@@ -52,32 +52,44 @@ void infix_to_posfix(Token** dest, Token** src, int size){
 
     for(int i = 0; i < size; i ++){
         Token *token = src[i];
+        printf("TOKEN %s ",token->value);
         switch(token->type){
-            default:
-                puts("Push operand");
-                // should be copied instead
-                dest[dest_index++] = token;
+            case C_P:
+            case O_P:
                 break;
             case OPERATOR:
-                int priority = get_priority(token->value);
+                int new_priority = get_priority(token->value);
                 if(!is_empty(&stack))
                 {
                     Token *top = pop(&stack);
                     int top_priority = get_priority(top->value);
-                    if(top_priority < priority){
-                        push(&stack,top);
-                        push(&stack,token);
+                    if(top_priority < new_priority){
+
+                        push(&stack,top); // add back to stack
+                        push(&stack,token); // add the new
                     }
                     else{
-                        dest[dest_index++] = top;
+                        puts("\nPOPPING");
+                        while(!is_empty(&stack) && (top_priority >= new_priority))
+                        {
+                            dest[dest_index++] = top;
+                            top = pop(&stack);
+                            top_priority = get_priority(top->value);
+                        }
+
+
                         push(&stack,token);
                     }
                 }
+                //empty stack push to it
                 else{
                     push(&stack,token);
                 }
-
-
+                break;
+            default:
+                //puts("Push operand");
+                // should be copied instead
+                dest[dest_index++] = token;
                 break;
         }
     }
@@ -85,6 +97,7 @@ void infix_to_posfix(Token** dest, Token** src, int size){
     while(!is_empty(&stack)){
         dest[dest_index++] = pop(&stack);
     }
+    puts("");
 
-    print_tokens(dest, dest_index);
+//    print_tokens(dest, dest_index);
 }
