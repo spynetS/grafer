@@ -37,5 +37,5 @@ double call_function(Calculator *calc,Function function, double x);
 double eval(Calculator* calc, char *str);
 double eval_tokens(Calculator* calc, Token** tokens, int size);
 
-
+double infix_eval(Calculator *calc, char* str);
 #endif // CALCULATOR_H_

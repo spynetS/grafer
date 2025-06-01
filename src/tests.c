@@ -26,29 +26,6 @@ void test_turing(){
 }
 
 
-double infix_eval(Calculator *calc, char* str){
-	Token** inf_tokens = malloc(sizeof(Token*)*20);
-	Token** pos_tokens = malloc(sizeof(Token*)*20);
-	int size_inf = 0;
-	int size = 0;
-	tokenize(inf_tokens,&size_inf,str);
-
-	infix_to_posfix(pos_tokens,size_inf, inf_tokens, &size);
-	//print_tokens(pos_tokens, size);
-
-	double ans = eval_tokens(calc,pos_tokens,size);
-	for(int i = 0; i < size_inf;i ++){
-		free_token(inf_tokens[i]);
-	}
-	for(int i = 0; i < size;i ++){
-		free_token(pos_tokens[i]);
-	}
-
-	free(inf_tokens);
-	free(pos_tokens);
-
-	return ans;
-}
 
 void test_infix(){
 
@@ -57,6 +34,8 @@ void test_infix(){
 	free_calculator(calc);
 
 	infix_eval(calc,"x = 3 + 4");
+	infix_eval(calc,"fun f (10)=10");
+
 
 	assert(infix_eval(calc,"x") == 7);
 	assert(infix_eval(calc,"x + 3") == 10);

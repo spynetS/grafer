@@ -60,31 +60,32 @@ void infix_to_posfix(Token** dest,int size, Token** src, int *size_pos){
     // instad of using src we should create a
     // copy so we dont change the src tokens
 
+    print_tokens(cpy, size);
+
     for(int i = 0; i < size; i ++){
         Token *token = cpy[i];
-        //printf("TOKEN %s ",token->value);
+
         switch(token->type){
             case C_P:
             case O_P:
                 break;
             case OPERATOR:
                 int new_priority = get_priority(token->value);
-                printf("Push operator %s\n",token->value);
+                //printf("Push operator %s\n",token->value);
                 if(!is_empty(&stack))
                 {
                     Token *top = pop(&stack);
                     int top_priority = get_priority(top->value);
                     printf("%d < %d\n",top_priority, new_priority);
                     if(top_priority < new_priority){
-                        puts("add to stack");
+                        //puts("add to stack");
                         push(&stack,top); // add back to stack
                         push(&stack,token); // add the new
                     }
                     else{
-                        puts("pop stack");
-
+                        //      puts("pop stack");
                         do {
-                            printf("adds %s to posfix\n",top->value);
+                            //        printf("adds %s to posfix\n",top->value);
                             dest[(*size_pos)++] = top;
                             top = pop(&stack);
                             top_priority = get_priority(top->value);
@@ -100,7 +101,7 @@ void infix_to_posfix(Token** dest,int size, Token** src, int *size_pos){
                 }
                 break;
             default:
-                printf("Push operand %s\n",token->value);
+                //printf("Push operand %s\n",token->value);
                 // should be copied instead
                 dest[(*size_pos)++] = token;
                 break;
@@ -109,7 +110,7 @@ void infix_to_posfix(Token** dest,int size, Token** src, int *size_pos){
 
     while(!is_empty(&stack)){
         Token *poped = pop(&stack);
-        printf("Pop stack %s\n",poped->value);
+        //printf("Pop stack %s\n",poped->value);
         if(poped == NULL) break;
         dest[(*size_pos)++] = poped;
     }

@@ -18,7 +18,7 @@ int main(){
 		}
 		printf("'%s'\n",str);
 
-		double value = eval(calc,str);
+		double value = infix_eval(calc,str);
 
 		printf("%lf\n",value);
 	}

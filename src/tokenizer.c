@@ -40,6 +40,7 @@ int is_operator(const char* operator){
 	if(strcmp(operator,"*")==0) return 1;
 	if(strcmp(operator,"/")==0) return 1;
 	if(strcmp(operator,"^")==0) return 1;
+	if(strcmp(operator,"fun")==0) return 1;
 	return 0;
 }
 
@@ -109,16 +110,12 @@ void tokenize(Token** tokens, int* size ,char* expression) {
 			else{
 				add_token(tokens,size,VARIABLE, buffer);
 			}
-
-			//add_token(tokens,size,PARAMETER,buffer);
-
 			add_token(tokens,size,C_P,")");
 			buffer[0]='\0';
 			buf_index = 0;
 		}
 		else if(value == '(') {
 			buffer[buf_index-1] = '\0';
-			add_token(tokens,size,FUNC,buffer);
 			add_token(tokens,size,O_P,"(");
 			buffer[0]='\0';
 			buf_index = 0;

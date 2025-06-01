@@ -6,4 +6,6 @@
 void infix_to_posfix(Token** dest, int size, Token** src, int *size_pos);
 
 
+
+
 #endif // INFIX_CONVERTER_H_

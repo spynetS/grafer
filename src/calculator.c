@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include "infix_converter.h"
 
 
 Calculator *new_calculator(){
@@ -282,4 +282,28 @@ void add_variable(Calculator* calculator, char* name, double value){
     strcpy(var->name,name);
     var->value = value;
     calculator->variables[(calculator->v_index)++] = var;
+}
+
+double infix_eval(Calculator *calc, char* str){
+	Token** inf_tokens = malloc(sizeof(Token*)*20);
+	Token** pos_tokens = malloc(sizeof(Token*)*20);
+	int size_inf = 0;
+	int size = 0;
+	tokenize(inf_tokens,&size_inf,str);
+
+	infix_to_posfix(pos_tokens,size_inf, inf_tokens, &size);
+	//print_tokens(pos_tokens, size);
+
+	double ans = eval_tokens(calc,pos_tokens,size);
+	for(int i = 0; i < size_inf;i ++){
+		free_token(inf_tokens[i]);
+	}
+	for(int i = 0; i < size;i ++){
+		free_token(pos_tokens[i]);
+	}
+
+	free(inf_tokens);
+	free(pos_tokens);
+
+	return ans;
 }
